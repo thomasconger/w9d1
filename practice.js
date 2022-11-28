@@ -82,3 +82,24 @@ Function.prototype.myBind = function (context, ...bindArgs) {
 // notMarkovSays("meow", "me");
 // // Pavlov says meow to me!
 // // true
+
+
+function curriedSum(numArgs){
+  let numbers = [];
+
+  function _curriedSum(num){
+    numbers.push(num);
+    if (numbers.length === numArgs){
+      return sum2(...numbers);
+    } else {
+      return _curriedSum;
+    }
+  }
+
+  return _curriedSum;
+}
+
+// const sum = curriedSum(4);
+// console.log(sum(5)(30)(20)(1)); // => 56
+
+
