@@ -36,6 +36,9 @@ Function.prototype.myBind = function (context, ...bindArgs) {
   }
 }
 
+// console.log(sum2.myBind(null, 1,2,3))
+// console.log(sum2.myBind(null, 1,2,3)(4))
+
 // EXAMPLES, which above code passes
 
 // class Cat {
@@ -84,13 +87,13 @@ Function.prototype.myBind = function (context, ...bindArgs) {
 // // true
 
 
-function curriedSum(numArgs){
+function curriedSum(callback,numArgs){
   let numbers = [];
 
   function _curriedSum(num){
     numbers.push(num);
     if (numbers.length === numArgs){
-      return sum2(...numbers);
+      return callback(...numbers);
     } else {
       return _curriedSum;
     }
@@ -100,6 +103,59 @@ function curriedSum(numArgs){
 }
 
 // const sum = curriedSum(4);
-// console.log(sum(5)(30)(20)(1)); // => 56
+// console.log(sum(5)(30)
+
+// GENERALIZED CURRY
+
+Function.prototype.curry = function (numArgs, context = this) {
+  let args = [];
+
+  // console.log(this)
+  let that = this
+
+  function _myCurry (ele) {
+    args.push(ele);
+    if (args.length >= numArgs) {
+      // console.log(this)
+      return that.apply(null, args)
+    } else {
+      return _myCurry
+    }
+  }
+
+  return _myCurry
+}
+
+class Dog {
+  constructor (name) {
+    this.name = name
+    this.age = 0
+  }
+
+  bark () {
+    console.log("bark")
+  }
+}
+
+class Cat {
+  constructor (name) {
+    this.name = name
+    this.age = 0
+  }
+
+  meow () {
+    console.log("meow")
+  }
+}
+
+let garfield = new Cat("garfield")
+let clifford = new Dog("clifford")
 
 
+// make garfield bark on third invocation of curried funciton
+
+let y = clifford.bark.bind(garfield)
+
+let x = y.curry(3)
+
+console.log(x(1)(2)(3))
